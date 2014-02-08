@@ -1,8 +1,26 @@
 from gimpfu import *
 
 
-def plugin_main():
-    pass
+def plugin_main(img, drawable, max_size, filename):
+    # resize image
+    max_pixel = max_size
+    scale = float(max_pixel) / (img.width if img.width > img.height else img.height)
+    if scale < 1:
+        img.scale(int(img.width * scale), int(img.height * scale))
+
+    # save as jpeg
+    if not filename:
+        filename = img.filename
+    pdb.file_jpeg_save(img,  # input image
+                       drawable,  # Drawable to save
+                       filename,  # filename
+                       filename,  # raw-filename
+                       0.98,  # quality
+                       1,  # smoothing
+                       1,  # optimize
+                       1,  # enable progressive jpeg image loading
+                       '',  # comment
+                       0, 1, 0, 1)
 
 
 register(
@@ -12,13 +30,14 @@ register(
     "oneyoung",
     "Copyright 2014 oneyoung",
     "2014",
-    N_("Save to jpeg"),  # menu item
-    "",  # image type
-    [],  # parameters
+    "<Image>/File/Save to jpeg",  # menu item
+    "RGB*, GRAY*",  # image type
+    [
+        (PF_INT, "max_size", "Max Size of Image", 2500),
+        (PF_FILE, "filename", "Save As...", ""),
+    ],  # parameters
     [],  # return value
     plugin_main,
-    menu=N_("<Image>/File"),  # menupath
-    domain=("gimp20-python", gimp.locale_directory)
 )
 
 main()
