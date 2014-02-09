@@ -24,6 +24,8 @@ def plugin_main(img, drawable, max_size, quality, dirname):
                        '',  # comment
                        0, 1, 0, 1)
 
+    pdb.gimp_image_clean_all(img)
+
 
 register(
     "python_jpg_saver",
@@ -32,7 +34,7 @@ register(
     "oneyoung",
     "Copyright 2014 oneyoung",
     "2014",
-    "<Image>/File/save to jpeg",  # menu item
+    "<Image>/File/Save/Save to jpeg",  # menu item
     "RGB*, GRAY*",  # image type
     [
         (PF_INT, "max_size", "Max Size of Image", 2500),
