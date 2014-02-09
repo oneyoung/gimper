@@ -1,7 +1,8 @@
+import os
 from gimpfu import *
 
 
-def plugin_main(img, drawable, max_size, filename):
+def plugin_main(img, drawable, max_size, quality, dirname):
     # resize image
     max_pixel = max_size
     scale = float(max_pixel) / (img.width if img.width > img.height else img.height)
@@ -9,13 +10,14 @@ def plugin_main(img, drawable, max_size, filename):
         img.scale(int(img.width * scale), int(img.height * scale))
 
     # save as jpeg
-    if not filename:
-        filename = img.filename
+    if not dirname:
+        dirname = os.path.dirname(img.filename)
+    filename = os.path.join(dirname, os.path.basename(img.filename))
     pdb.file_jpeg_save(img,  # input image
                        drawable,  # Drawable to save
                        filename,  # filename
                        filename,  # raw-filename
-                       0.98,  # quality
+                       quality,  # quality
                        1,  # smoothing
                        1,  # optimize
                        1,  # enable progressive jpeg image loading
@@ -30,11 +32,12 @@ register(
     "oneyoung",
     "Copyright 2014 oneyoung",
     "2014",
-    "<Image>/File/Save to jpeg",  # menu item
+    "<Image>/File/save to jpeg",  # menu item
     "RGB*, GRAY*",  # image type
     [
         (PF_INT, "max_size", "Max Size of Image", 2500),
-        (PF_FILE, "filename", "Save As...", ""),
+        (PF_FLOAT, "quality", "compress quality of jpeg", 0.98),
+        (PF_DIRNAME, "dirname", "Directory to save...", ""),
     ],  # parameters
     [],  # return value
     plugin_main,
